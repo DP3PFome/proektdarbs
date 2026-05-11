@@ -1439,6 +1439,9 @@ body {
   padding: 32px;
   z-index: 1;
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.35);
+  max-height: min(90vh, 860px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .modal-header {
@@ -1469,12 +1472,14 @@ body {
 .auth-form input {
   width: 100%;
   margin-top: 10px;
-  padding: 14px 16px;
+  padding: 16px 18px;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
   color: #eef3ff;
   outline: none;
+  font-size: 1rem;
+  min-height: 54px;
 }
 
 .full-width {
@@ -1505,6 +1510,15 @@ body {
 .password-input-wrapper input {
   width: 100%;
   padding-right: 48px;
+}
+
+.password-row {
+  display: grid;
+  gap: 12px;
+}
+
+.password-row .generate-btn {
+  width: 100%;
 }
 
 .eye-button {
@@ -1543,12 +1557,44 @@ body {
     padding: 0 20px 40px;
   }
 
-  .page-layout {
-    padding: 0 20px 40px;
-  }
-
   .hero-panel {
     margin: 24px auto 36px;
+  }
+
+  .auth-modal {
+    width: calc(100% - 24px);
+    padding: 22px 18px;
+    border-radius: 22px;
+  }
+
+  .modal-overlay {
+    place-items: start;
+    overflow-y: auto;
+    padding: 20px 0 24px;
+  }
+
+  .modal-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .auth-form label {
+    font-size: 1rem;
+  }
+
+  .auth-form input {
+    padding: 18px 16px;
+    min-height: 58px;
+  }
+
+  .password-row {
+    grid-template-columns: 1fr;
+  }
+
+  .generate-btn {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 16px;
   }
 }
 
