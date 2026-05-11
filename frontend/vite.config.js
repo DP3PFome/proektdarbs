@@ -15,6 +15,17 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['vue', 'vue-router', 'vuetify'],
+          axios: ['axios']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
+  },
   server: {
     host: '0.0.0.0',
     proxy: {
