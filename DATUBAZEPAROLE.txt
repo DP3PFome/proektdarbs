@@ -1,0 +1,2 @@
+proekt_darbs_DATABAZE			Nosaukums
+CAceavpcSP6@diU				Parole
