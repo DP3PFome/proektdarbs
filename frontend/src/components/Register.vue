@@ -13,9 +13,30 @@
 <script>
 import api from "@/api"
 
-await api.post("/register", {
-  name: this.name,
-  email: this.email,
-  password: this.password
-})
+export default {
+  data() {
+    return {
+      name: "",
+      email: "",
+      password: ""
+    }
+  },
+
+  methods: {
+    async register() {
+      try {
+        await api.post("/register", {
+          name: this.name,
+          email: this.email,
+          password: this.password
+        })
+
+        alert("Konts izveidots")
+      } catch (e) {
+        console.error(e)
+        alert("Kļūda")
+      }
+    }
+  }
+}
 </script>

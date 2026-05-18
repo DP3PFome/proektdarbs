@@ -12,8 +12,28 @@
 <script>
 import api from "@/api"
 
-await api.post("/login", {
-  email: this.email,
-  password: this.password
-})
+export default {
+  data() {
+    return {
+      email: "",
+      password: ""
+    }
+  },
+
+  methods: {
+    async login() {
+      try {
+        const response = await api.post("/login", {
+          email: this.email,
+          password: this.password
+        })
+
+        alert("Ienākšana veiksmīga")
+      } catch (e) {
+        console.error(e)
+        alert("Kļūda")
+      }
+    }
+  }
+}
 </script>
