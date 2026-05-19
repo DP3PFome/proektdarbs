@@ -83,11 +83,6 @@
                 <span>{{ collection.items_count || 0 }} {{ t.itemsStat }}</span>
                 <span>{{ collection.user_id ? ('#' + collection.user_id) : '' }}</span>
               </div>
-              <div class="tags">
-                <span>Rare</span>
-                <span>Vintage</span>
-                <span>Favorites</span>
-              </div>
               <div class="card-actions">
                 <button class="action-btn" @click="viewItems(collection)">{{ t.viewItems }}</button>
                 <button v-if="isLoggedIn && collection.user_id === currentUserId" class="action-btn edit" @click="openCollectionModal('edit', collection)">{{ t.editCollection }}</button>
@@ -238,17 +233,6 @@
           <label>
             {{ t.collectionDescription }}
             <textarea v-model="collectionForm.description" rows="4"></textarea>
-          </label>
-
-          <label>
-            {{ t.tags }}
-            <input v-model="tagInput" @keydown.enter.prevent="addTag" type="text" :placeholder="t.addTagPlaceholder" />
-            <div class="tags-display" v-if="collectionForm.tags.length">
-              <span v-for="(tag, index) in collectionForm.tags" :key="tag" class="tag-chip">
-                {{ tag }}
-                <button type="button" @click="removeTag(index)">×</button>
-              </span>
-            </div>
           </label>
 
           <button type="submit" class="primary-btn full-width">
@@ -502,7 +486,6 @@ export default {
       showPassword: false,
       activeSection: 'explore',
       searchQuery: '',
-      tagInput: '',
 
       collections: [],
       stats: {
@@ -517,8 +500,7 @@ export default {
       selectedCollection: null,
       collectionForm: {
         title: '',
-        description: '',
-        tags: []
+        description: ''
       },
 
       // Item management
@@ -818,13 +800,10 @@ export default {
       if (mode === 'edit' && collection) {
         this.collectionForm.title = collection.title;
         this.collectionForm.description = collection.description;
-        this.collectionForm.tags = collection.tags ? collection.tags.map(t => t.name) : [];
       } else {
         this.collectionForm.title = '';
         this.collectionForm.description = '';
-        this.collectionForm.tags = [];
       }
-      this.tagInput = '';
       this.showCollectionModal = true;
     },
 
@@ -832,20 +811,7 @@ export default {
       this.showCollectionModal = false;
       this.collectionForm.title = '';
       this.collectionForm.description = '';
-      this.collectionForm.tags = [];
-      this.tagInput = '';
       this.selectedCollection = null;
-    },
-
-    addTag() {
-      if (this.tagInput.trim() && !this.collectionForm.tags.includes(this.tagInput.trim())) {
-        this.collectionForm.tags.push(this.tagInput.trim());
-        this.tagInput = '';
-      }
-    },
-
-    removeTag(index) {
-      this.collectionForm.tags.splice(index, 1);
     },
 
     async saveCollection() {
