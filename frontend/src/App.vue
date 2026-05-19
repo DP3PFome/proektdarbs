@@ -337,7 +337,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import api, { API_URL } from './api.js';
 
 export default {
   data() {
@@ -587,7 +587,7 @@ export default {
         data.password = this.profileForm.password;
       }
 
-      await axios.put('http://127.0.0.1:8000/api/user/profile', data);
+      await api.put('/user/profile', data);
       this.user.name = this.profileForm.name;
       this.user.email = this.profileForm.email;
       alert(this.t.profileUpdated);
@@ -681,15 +681,15 @@ export default {
         return;
       }
 
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/user');
+        const response = await api.get('/user');
         this.isLoggedIn = true;
         this.currentUserId = response.data.id;
       } catch (e) {
         localStorage.removeItem('token');
-        delete axios.defaults.headers.common['Authorization'];
+        delete api.defaults.headers.common['Authorization'];
         this.isLoggedIn = false;
         this.currentUserId = null;
       }
@@ -721,7 +721,7 @@ export default {
       this.isLoggedIn = false;
       this.currentUserId = null;
       localStorage.removeItem('token');
-      delete axios.defaults.headers.common['Authorization'];
+      delete api.defaults.headers.common['Authorization'];
       this.loginForm.password = '';
       this.registerForm.password = '';
       this.registerForm.confirmPassword = '';
@@ -739,7 +739,7 @@ export default {
     },
     async loadCollections() {
       try {
-        const res = await axios.get('http://127.0.0.1:8000/api/collections');
+        const res = await api.get('/collections');
         this.collections = res.data;
       } catch (e) {
         console.error('Unable to load collections', e);
@@ -747,7 +747,7 @@ export default {
     },
     async loadStats() {
       try {
-        const res = await axios.get('http://127.0.0.1:8000/api/stats');
+        const res = await api.get('/stats');
         this.stats = res.data;
       } catch (e) {
         console.error('Unable to load stats', e);
@@ -755,12 +755,12 @@ export default {
     },
     async loginUser() {
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/login', this.loginForm);
+        const response = await api.post('/login', this.loginForm);
         this.isLoggedIn = true;
         this.currentUserId = response.data.user.id;
         this.user = response.data.user;
         localStorage.setItem('token', response.data.token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+        api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
         this.closeAuthModal();
         this.loadCollections();
       } catch (e) {
@@ -774,7 +774,7 @@ export default {
         return;
       }
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/register', {
+        const response = await api.post('/register', {
           name: this.registerForm.name,
           email: this.registerForm.email,
           password: this.registerForm.password
@@ -784,7 +784,7 @@ export default {
         this.currentUserId = response.data.user.id;
         this.user = response.data.user;
         localStorage.setItem('token', response.data.token);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+        api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
 
         if (generatedPassword) {
           alert(`${this.t.generatedPasswordAlert}\n${generatedPassword}`);
@@ -851,9 +851,9 @@ export default {
     async saveCollection() {
       try {
         if (this.collectionMode === 'create') {
-          await axios.post('http://127.0.0.1:8000/api/collections', this.collectionForm);
+          await api.post('/collections', this.collectionForm);
         } else {
-          await axios.put(`http://127.0.0.1:8000/api/collections/${this.selectedCollection.id}`, this.collectionForm);
+          await api.put(`/collections/${this.selectedCollection.id}`, this.collectionForm);
         }
         this.closeCollectionModal();
         this.loadCollections();
@@ -870,7 +870,7 @@ export default {
 
     async deleteCollection(collection) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/collections/${collection.id}`);
+        await api.delete(`/collections/${collection.id}`);
         this.loadCollections();
       } catch (e) {
         alert('Failed to delete collection');
@@ -887,7 +887,7 @@ export default {
 
     async loadItems(collectionId) {
       try {
-        const res = await axios.get(`http://127.0.0.1:8000/api/items/${collectionId}`);
+        const res = await api.get(`/items/${collectionId}`);
         this.items = res.data;
       } catch (e) {
         console.error('Unable to load items', e);
@@ -928,11 +928,11 @@ export default {
         }
 
         if (this.itemMode === 'create') {
-          await axios.post('http://127.0.0.1:8000/api/items', formData, {
+          await api.post('/items', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
           });
         } else {
-          await axios.put(`http://127.0.0.1:8000/api/items/${this.selectedItem.id}`, formData, {
+          await api.put(`/items/${this.selectedItem.id}`, formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
           });
         }
@@ -951,7 +951,7 @@ export default {
 
     async deleteItem(item) {
       try {
-        await axios.delete(`http://127.0.0.1:8000/api/items/${item.id}`);
+        await api.delete(`/items/${item.id}`);
         this.loadItems(this.selectedCollectionForItem.id);
       } catch (e) {
         alert('Failed to delete item');
@@ -963,7 +963,7 @@ export default {
     },
 
     imageUrl(path) {
-      return `http://127.0.0.1:8000/storage/${path}`;
+      return `${API_URL}/storage/${path}`;
     }
   }
 };
