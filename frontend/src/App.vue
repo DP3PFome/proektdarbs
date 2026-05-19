@@ -1328,54 +1328,6 @@ body {
   color: #c9d5ef;
 }
 
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.tags span {
-  background: rgba(255, 255, 255, 0.08);
-  color: #e2eafc;
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-size: 0.82rem;
-}
-
-.tags-display {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.tag-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(99, 102, 241, 0.2);
-  color: #c7d2fe;
-  padding: 6px 10px;
-  border-radius: 16px;
-  font-size: 0.85rem;
-  border: 1px solid rgba(99, 102, 241, 0.3);
-}
-
-.tag-chip button {
-  border: none;
-  background: transparent;
-  color: #c7d2fe;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-  padding: 0;
-  margin-left: 4px;
-}
-
-.tag-chip button:hover {
-  color: #ffffff;
-}
-
 .modal-overlay {
   position: fixed;
   inset: 0;
