@@ -531,48 +531,6 @@ export default {
       }
     };
   },
-
-  // Profile methods
-  openProfileModal() {
-    this.profileForm = {
-      name: this.user.name,
-      email: this.user.email,
-      password: '',
-      confirmPassword: ''
-    };
-    this.showProfileModal = true;
-  },
-
-  closeProfileModal() {
-    this.showProfileModal = false;
-    this.profileForm = { name: '', email: '', password: '', confirmPassword: '' };
-  },
-
-  async saveProfile() {
-    if (this.profileForm.password !== this.profileForm.confirmPassword) {
-      alert(this.t.passwordsDoNotMatch);
-      return;
-    }
-
-    try {
-      const data = {
-        name: this.profileForm.name,
-        email: this.profileForm.email
-      };
-      if (this.profileForm.password) {
-        data.password = this.profileForm.password;
-      }
-
-      await api.put('/user/profile', data);
-      this.user.name = this.profileForm.name;
-      this.user.email = this.profileForm.email;
-      alert(this.t.profileUpdated);
-      this.closeProfileModal();
-    } catch (e) {
-      alert('Failed to update profile');
-    }
-  },
-
   computed: {
     t() {
       return this.translations[this.locale];
@@ -651,6 +609,47 @@ export default {
     this.restoreAuth();
   },
   methods: {
+    openProfileModal() {
+      this.profileForm = {
+        name: this.user?.name || '',
+        email: this.user?.email || '',
+        password: '',
+        confirmPassword: ''
+      };
+      this.showProfileModal = true;
+    },
+
+    closeProfileModal() {
+      this.showProfileModal = false;
+      this.profileForm = { name: '', email: '', password: '', confirmPassword: '' };
+    },
+
+    async saveProfile() {
+      if (this.profileForm.password !== this.profileForm.confirmPassword) {
+        alert(this.t.passwordsDoNotMatch);
+        return;
+      }
+
+      try {
+        const data = {
+          name: this.profileForm.name,
+          email: this.profileForm.email
+        };
+        if (this.profileForm.password) {
+          data.password = this.profileForm.password;
+        }
+
+        await api.put('/user/profile', data);
+        if (this.user) {
+          this.user.name = this.profileForm.name;
+          this.user.email = this.profileForm.email;
+        }
+        alert(this.t.profileUpdated);
+        this.closeProfileModal();
+      } catch (e) {
+        alert('Failed to update profile');
+      }
+    },
     async restoreAuth() {
       const token = localStorage.getItem('token');
       if (!token) {
