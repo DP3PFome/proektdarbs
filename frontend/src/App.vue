@@ -302,12 +302,12 @@
 
           <label>
             {{ t.newPassword }}
-            <input v-model="profileForm.password" type="password" />
+            <input v-model="profileForm.password" type="password" :placeholder="t.leaveBlankToKeep" autocomplete="new-password" />
           </label>
 
           <label>
             {{ t.confirmNewPassword }}
-            <input v-model="profileForm.confirmPassword" type="password" />
+            <input v-model="profileForm.confirmPassword" type="password" :placeholder="t.leaveBlankToKeep" autocomplete="new-password" />
           </label>
 
           <button type="submit" class="primary-btn full-width">
@@ -395,6 +395,7 @@ export default {
           currentPassword: 'Current Password',
           newPassword: 'New Password',
           confirmNewPassword: 'Confirm New Password',
+          leaveBlankToKeep: 'Leave blank to keep unchanged',
           saveProfile: 'Save Profile',
           profileUpdated: 'Profile updated successfully',
           passwordsDoNotMatch: 'Passwords do not match'
@@ -466,6 +467,7 @@ export default {
           currentPassword: 'Pašreizējā parole',
           newPassword: 'Jaunā parole',
           confirmNewPassword: 'Apstiprināt jauno paroli',
+          leaveBlankToKeep: 'Atstājiet tukšu, lai nemainītu',
           saveProfile: 'Saglabāt profilu',
           profileUpdated: 'Profils atjaunināts veiksmīgi',
           passwordsDoNotMatch: 'Paroles nesakrīt'
@@ -625,29 +627,39 @@ export default {
     },
 
     async saveProfile() {
-      if (this.profileForm.password !== this.profileForm.confirmPassword) {
+      if (this.profileForm.password && this.profileForm.password !== this.profileForm.confirmPassword) {
         alert(this.t.passwordsDoNotMatch);
         return;
       }
 
       try {
-        const data = {
-          name: this.profileForm.name,
-          email: this.profileForm.email
-        };
+        const data = {};
+        if (this.profileForm.name !== this.user?.name) {
+          data.name = this.profileForm.name;
+        }
+        if (this.profileForm.email !== this.user?.email) {
+          data.email = this.profileForm.email;
+        }
         if (this.profileForm.password) {
           data.password = this.profileForm.password;
+          data.password_confirmation = this.profileForm.confirmPassword;
         }
 
-        await api.put('/user/profile', data);
-        if (this.user) {
-          this.user.name = this.profileForm.name;
-          this.user.email = this.profileForm.email;
+        if (Object.keys(data).length === 0) {
+          this.closeProfileModal();
+          return;
         }
+
+        const response = await api.put('/user/profile', data);
+        this.user = response.data.user;
         alert(this.t.profileUpdated);
         this.closeProfileModal();
       } catch (e) {
-        alert('Failed to update profile');
+        if (e.response?.data?.errors) {
+          alert(Object.values(e.response.data.errors).flat().join('\n'));
+        } else {
+          alert(e.response?.data?.message ?? 'Failed to update profile');
+        }
       }
     },
     async restoreAuth() {

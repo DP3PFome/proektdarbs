@@ -19,14 +19,6 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\CorsMiddleware::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(function (Throwable $e, $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'message' => $e->getMessage(),
-                    'status' => 'error'
-                ], 500);
-            }
-        });
+    ->withExceptions(function (Exceptions $exceptions): void {
     })
     ->create();

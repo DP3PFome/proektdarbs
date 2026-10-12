@@ -34,7 +34,11 @@ export default {
         alert("Konts izveidots")
       } catch (e) {
         console.error(e)
-        alert("Kļūda")
+        const errors = e.response?.data?.errors
+        const message = errors
+          ? Object.values(errors).flat().join("\n")
+          : e.response?.data?.message ?? "Reģistrācija neizdevās. Pārbaudiet savienojumu ar serveri."
+        alert(message)
       }
     }
   }

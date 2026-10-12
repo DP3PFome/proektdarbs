@@ -6,7 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 // https://vite.dev/config/
 export default ({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const apiUrl = (env.VITE_API_URL ?? '').replace(/\/$/, '')
+  const apiProxyTarget = (env.VITE_API_PROXY_TARGET ?? 'http://127.0.0.1:8000').replace(/\/$/, '')
 
   return defineConfig({
     plugins: [
@@ -31,14 +31,18 @@ export default ({ mode }) => {
     },
     server: {
       host: '0.0.0.0',
-      proxy: apiUrl ? {
+      proxy: {
         '/api': {
-          target: apiUrl,
+          target: apiProxyTarget,
           changeOrigin: true,
-          secure: false,
-          rewrite: (path) => path.replace(/^\/api/, '/api')
+          secure: false
+        },
+        '/storage': {
+          target: apiProxyTarget,
+          changeOrigin: true,
+          secure: false
         }
-      } : {}
+      }
     }
   })
 }
